@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Score Randomizer</string>
+    <string name="start">start</string>
+    <string name="stop">stop</string>
+    <string name="score">Score</string>
+    <string name="reset">Reset</string>
+</resources>
