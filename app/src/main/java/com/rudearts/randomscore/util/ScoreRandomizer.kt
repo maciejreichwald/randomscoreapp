@@ -8,28 +8,30 @@ import java.util.*
 class ScoreRandomizer {
 
     companion object {
-        private val MIN_ELEMENTS_COUNT = 5
+        private const val TAG = "Randomizer"
+        private const val MIN_ELEMENTS_COUNT = 5
+        private const val PERCENTAGE_MAX = 100
+        private val SCORE_ITEM_TYPES_COUNT = ScoreItemType.values().size
     }
 
     private val random = Random()
 
-    fun randomize(scores:MutableList<ScoreItem>):List<ScoreItem> = when(scores.size) {
+    fun randomize(scores:MutableList<ScoreItem>) = when(scores.size) {
         MIN_ELEMENTS_COUNT -> randomizeScores(scores)
         else -> addRandomElement(scores)
     }
 
-    internal fun addRandomElement(scores: MutableList<ScoreItem>):List<ScoreItem> {
+    internal fun addRandomElement(scores: MutableList<ScoreItem>) = scores.apply {
         val score = ScoreItem(type = randomType())
-        scores.add(score)
-        return scores
+        add(score)
     }
 
-    private fun randomType() = when(random.nextInt(2)) {
+    private fun randomType() = when(randomNextInt(SCORE_ITEM_TYPES_COUNT)) {
         0 -> ScoreItemType.BLUE
         else -> ScoreItemType.RED
     }
 
-    internal fun randomizeScores(scores: MutableList<ScoreItem>):List<ScoreItem> = when(random.nextInt(100)) {
+    internal fun randomizeScores(scores: MutableList<ScoreItem>) = when(randomNextInt(PERCENTAGE_MAX)) {
         in 0..49 -> increaseRandomScore(scores)
         in 50..84 -> resetRandomScore(scores)
         in 85..94 -> deleteRandomScore(scores)
@@ -44,7 +46,7 @@ class ScoreRandomizer {
         val mergedScore = scoreItem.score + prevScoreItem.score
         scores[index] = scoreItem.copy(score = mergedScore)
 
-        Log.d("Randomizer", "merge: $index, $mergedScore")
+        Log.d(TAG, "merge: $index, $mergedScore")
         return scores
     }
 
@@ -58,7 +60,7 @@ class ScoreRandomizer {
         val scoreItem = scores[index]
         scores[index] = scoreItem.copy(score = 0)
 
-        Log.d("Randomizer", "reset: $index")
+        Log.d(TAG, "reset: $index")
         return scores
     }
 
@@ -66,7 +68,7 @@ class ScoreRandomizer {
         val index = randomizeIndex(scores)
         scores.removeAt(index)
 
-        Log.d("Randomizer", "delete: $index")
+        Log.d(TAG, "delete: $index")
         return scores
     }
 
@@ -75,10 +77,12 @@ class ScoreRandomizer {
         val scoreItem = scores[index]
         scores[index] = scoreItem.copy(score = scoreItem.score+1)
 
-        Log.d("Randomizer", "increase: $index, ${scores[index].score}")
+        Log.d(TAG, "increase: $index, ${scores[index].score}")
         return scores
     }
 
-    private fun randomizeIndex(scores: MutableList<ScoreItem>) = random.nextInt(scores.size-1)
+    private fun randomizeIndex(scores: MutableList<ScoreItem>) = randomNextInt(scores.size-1)
+
+    private fun randomNextInt(max:Int) = random.nextInt(max)
 
 }

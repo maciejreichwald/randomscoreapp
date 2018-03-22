@@ -9,7 +9,7 @@ import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 class MainPresenter @Inject constructor(
-        internal val view:MainContract.View,
+        internal val view:MainContract.View?,
         internal val scoreUseCase: RandomizeScoreUseCase,
         internal val resetUseCase: ResetScoresUseCase) : MainContract.Presenter {
 
@@ -18,7 +18,7 @@ class MainPresenter @Inject constructor(
     override fun start() {
         disposable?.let { return }
 
-        view.updatePlayingState(PlayingState.STARTED)
+        view?.updatePlayingState(PlayingState.STARTED)
 
         disposable = scoreUseCase.start()
                 .threadToAndroid()
@@ -26,11 +26,11 @@ class MainPresenter @Inject constructor(
     }
 
     private fun onItemsGenerated(items: List<ScoreItem>) {
-        view.updateItems(items)
+        view?.updateItems(items)
     }
 
     override fun stop() {
-        view.updatePlayingState(PlayingState.STOPPED)
+        view?.updatePlayingState(PlayingState.STOPPED)
 
         when(disposable) {
             null -> onReset()
@@ -40,7 +40,7 @@ class MainPresenter @Inject constructor(
 
     private fun onReset() {
         resetUseCase.reset()
-        view.updateItems(emptyList())
+        view?.updateItems(emptyList())
     }
 
     private fun onStop() {
