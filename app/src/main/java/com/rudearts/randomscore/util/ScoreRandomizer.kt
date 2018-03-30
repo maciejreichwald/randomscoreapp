@@ -11,6 +11,7 @@ class ScoreRandomizer {
         private const val TAG = "Randomizer"
         private const val MIN_ELEMENTS_COUNT = 5
         private const val PERCENTAGE_MAX = 100
+        private const val INCREASE_VALUE = 1
         private val SCORE_ITEM_TYPES_COUNT = ScoreItemType.values().size
     }
 
@@ -44,7 +45,8 @@ class ScoreRandomizer {
         val prevScoreItem = itemByPrevIndex(scores, index)
 
         val mergedScore = scoreItem.score + prevScoreItem.score
-        scores[index] = scoreItem.copy(score = mergedScore)
+        val multipliedMergedScore = mergedScore * scoreItem.type.multiplier
+        scores[index] = scoreItem.copy(score = mergedScore, visibleScore = multipliedMergedScore)
 
         Log.d(TAG, "merge: $index, $mergedScore")
         return scores
@@ -58,7 +60,7 @@ class ScoreRandomizer {
     private fun resetRandomScore(scores: MutableList<ScoreItem>): List<ScoreItem> {
         val index = randomizeIndex(scores)
         val scoreItem = scores[index]
-        scores[index] = scoreItem.copy(score = 0)
+        scores[index] = scoreItem.copy(score = 0, visibleScore = 0)
 
         Log.d(TAG, "reset: $index")
         return scores
@@ -75,7 +77,9 @@ class ScoreRandomizer {
     private fun increaseRandomScore(scores: MutableList<ScoreItem>): List<ScoreItem> {
         val index = randomizeIndex(scores)
         val scoreItem = scores[index]
-        scores[index] = scoreItem.copy(score = scoreItem.score+1)
+        val increasedScore = scoreItem.score + INCREASE_VALUE
+        val multipliedScore = increasedScore * scoreItem.type.multiplier
+        scores[index] = scoreItem.copy(score = increasedScore, visibleScore = multipliedScore)
 
         Log.d(TAG, "increase: $index, ${scores[index].score}")
         return scores

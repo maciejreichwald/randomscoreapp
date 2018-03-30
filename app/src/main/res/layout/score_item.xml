@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{Integer.toString(item.score)}"
+                android:text="@{Integer.toString(item.visibleScore)}"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/text_small_size"
                 tools:text="12321"/>
